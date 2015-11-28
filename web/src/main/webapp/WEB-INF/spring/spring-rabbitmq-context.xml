@@ -1,0 +1,49 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/rabbit
+           http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+<rabbit:connection-factory id="connectionFactory" />
+
+<rabbit:template id="amqpTemplate" connection-factory="connectionFactory"
+    exchange="myExchange"/>
+
+<rabbit:admin connection-factory="connectionFactory" />
+
+<rabbit:queue name="successQueue" durable="true"/>
+<rabbit:queue name="errorQueue" durable="true"/>
+
+<rabbit:topic-exchange name="myExchange">
+    <rabbit:bindings>
+        <rabbit:binding queue="successQueue" pattern="key.test.success" />
+        <rabbit:binding queue="errorQueue" pattern="key.test.error" />
+    </rabbit:bindings>
+</rabbit:topic-exchange>
+
+
+<rabbit:listener-container connection-factory="connectionFactory">
+    <rabbit:listener ref="successListener" method="onMessage" queue-names="successQueue" />
+    <rabbit:listener ref="errorListener" method="onMessage" queue-names="errorQueue" />
+</rabbit:listener-container>
+
+
+<bean id="successListener" class="com.palvair.rabbitmq.listeners.SuccessListener">
+<property name="amqpTemplate" ref="amqpTemplate"/>
+<property name="targetRoutingKey" value="process.routing.key"></property>
+</bean>
+
+<!--
+<bean class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+    <constructor-arg ref="connectionFactory" />
+    <property name="queues" ref="errorQueue" />
+    <property name="messageListener" ref="errorListener" />
+</bean>
+-->
+
+<bean id="errorListener" class="com.palvair.rabbitmq.listeners.ErrorListener"/>
+
+</beans>
