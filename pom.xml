@@ -12,6 +12,7 @@
     <module>elasticsearch</module>
     <module>batch</module>
       <module>model</module>
+      <module>services</module>
   </modules>
   <packaging>pom</packaging>
 

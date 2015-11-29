@@ -1,5 +1,6 @@
 package com.palvair.controller;
 
+import com.palvair.Status;
 import com.palvair.View;
 import lombok.extern.log4j.Log4j;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -22,6 +23,7 @@ public class HomeController {
     public String home() {
         final View view = new View();
         view.setPage("index");
+        view.setStatus(Status.PENDING);
         amqpTemplate.convertAndSend("view",view);
         return "index";
     }

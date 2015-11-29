@@ -1,5 +1,6 @@
 package com.palvair.batch;
 
+import com.palvair.Status;
 import com.palvair.View;
 import org.springframework.batch.item.ItemProcessor;
 
@@ -8,6 +9,8 @@ import org.springframework.batch.item.ItemProcessor;
  */
 public class CustomProcessor implements ItemProcessor<View,View> {
     public View process(View view) throws Exception {
-        return null;
+        System.out.println("view received = "+view);
+        view.setStatus(Status.DONE);
+        return view;
     }
 }
