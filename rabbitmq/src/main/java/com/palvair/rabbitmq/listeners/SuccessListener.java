@@ -1,16 +1,12 @@
 package com.palvair.rabbitmq.listeners;
 
+import com.palvair.View;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageListener;
 
-import java.nio.charset.Charset;
-
-public class SuccessListener implements MessageListener {
+public class SuccessListener {
 
     private String targetRoutingKey;
     private AmqpTemplate amqpTemplate;
-    private Message message;
 
     public void setTargetRoutingKey(String targetRoutingKey) {
         this.targetRoutingKey = targetRoutingKey;
@@ -20,17 +16,8 @@ public class SuccessListener implements MessageListener {
         this.amqpTemplate = amqpTemplate;
     }
 
-    public void onMessage(Message message) {
-        this.message = message;
-        System.out.println("[SUCCESS LISTENER] Message Received :" + message.toString());
-        System.out.println("[SUCCESS LISTENER] Body of the message : " + new String(message.getBody(), Charset.forName("UTF-8")));
-    }
 
-    public Message getMessage() {
-        return this.message;
-    }
-
-    public void reset() {
-        this.message = null;
+    public void handleView(View message) {
+        System.out.println("view = "+message);
     }
 }

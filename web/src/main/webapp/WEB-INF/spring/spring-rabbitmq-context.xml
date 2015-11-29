@@ -19,15 +19,15 @@
 
 <rabbit:topic-exchange name="myExchange">
     <rabbit:bindings>
-        <rabbit:binding queue="successQueue" pattern="key.test.success" />
-        <rabbit:binding queue="errorQueue" pattern="key.test.error" />
+        <rabbit:binding queue="successQueue" pattern="view" />
+        <rabbit:binding queue="errorQueue" pattern="error" />
     </rabbit:bindings>
 </rabbit:topic-exchange>
 
 
 <rabbit:listener-container connection-factory="connectionFactory">
-    <rabbit:listener ref="successListener" method="onMessage" queue-names="successQueue" />
-    <rabbit:listener ref="errorListener" method="onMessage" queue-names="errorQueue" />
+    <rabbit:listener ref="successListener" method="handleView" queue-names="successQueue" />
+    <rabbit:listener ref="errorListener" method="handleError" queue-names="errorQueue" />
 </rabbit:listener-container>
 
 
@@ -35,14 +35,6 @@
 <property name="amqpTemplate" ref="amqpTemplate"/>
 <property name="targetRoutingKey" value="process.routing.key"></property>
 </bean>
-
-<!--
-<bean class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
-    <constructor-arg ref="connectionFactory" />
-    <property name="queues" ref="errorQueue" />
-    <property name="messageListener" ref="errorListener" />
-</bean>
--->
 
 <bean id="errorListener" class="com.palvair.rabbitmq.listeners.ErrorListener"/>
 
